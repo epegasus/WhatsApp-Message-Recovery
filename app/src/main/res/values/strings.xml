@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">WhatsApp Message Recovery</string>
+
+    <string name="permission_required">Permission required to get notifications.</string>
+    <string name="grant_permission">Grant Permission</string>
+</resources>
