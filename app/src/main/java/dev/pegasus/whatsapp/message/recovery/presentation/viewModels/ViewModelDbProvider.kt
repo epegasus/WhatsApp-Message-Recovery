@@ -2,6 +2,7 @@ package dev.pegasus.whatsapp.message.recovery.presentation.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.CreationExtras
 import dev.pegasus.whatsapp.message.recovery.domain.useCases.UseCaseDbMessages
 
 /**
@@ -13,13 +14,20 @@ import dev.pegasus.whatsapp.message.recovery.domain.useCases.UseCaseDbMessages
  * - GitHub: <a href="https://github.com/epegasus">Github</a>
  */
 
-class ViewModelDbProvider(private val useCaseDbMessages: UseCaseDbMessages) : ViewModelProvider.Factory {
+class ViewModelDbProvider(private val useCase: UseCaseDbMessages) : ViewModelProvider.Factory {
 
-    @Suppress("CAST_NEVER_SUCCEEDS")
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ViewModelDbProvider::class.java)) {
-            return ViewModelDbProvider(useCaseDbMessages) as T
+        return when {
+            modelClass.isAssignableFrom(ViewModelDbMessages::class.java) ->
+                ViewModelDbMessages(useCase) as T
+
+            else -> throw IllegalArgumentException("Unknown ViewModel class")
         }
-        return super.create(modelClass)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
+        return create(modelClass)
     }
 }

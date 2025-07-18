@@ -3,6 +3,7 @@ package dev.pegasus.whatsapp.message.recovery.presentation.ui
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -17,6 +18,7 @@ import dev.pegasus.whatsapp.message.recovery.databinding.ActivityMainBinding
 import dev.pegasus.whatsapp.message.recovery.presentation.adapters.AdapterMessages
 import dev.pegasus.whatsapp.message.recovery.presentation.viewModels.ViewModelDbMessages
 import dev.pegasus.whatsapp.message.recovery.presentation.viewModels.ViewModelDbProvider
+import dev.pegasus.whatsapp.message.recovery.utils.Constants.TAG
 
 class MainActivity : AppCompatActivity() {
 
@@ -58,7 +60,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initObservers() {
-        viewModel.listLiveData.observe(this) { adapter.submitList(it) }
+        viewModel.listLiveData.observe(this) {
+            Log.d(TAG, "initObservers: List: ${it.size}")
+            adapter.submitList(it)
+        }
     }
 
     private fun checkPermission(): Boolean {

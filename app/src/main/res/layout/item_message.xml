@@ -11,6 +11,7 @@
         android:id="@+id/ifvAppIcon"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_marginVertical="12dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="12dp"
         android:background="#DCDCDC"
