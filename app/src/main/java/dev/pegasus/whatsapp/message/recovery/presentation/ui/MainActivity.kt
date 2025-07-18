@@ -14,6 +14,7 @@ import androidx.core.view.isVisible
 import dev.pegasus.whatsapp.message.recovery.App
 import dev.pegasus.whatsapp.message.recovery.R
 import dev.pegasus.whatsapp.message.recovery.databinding.ActivityMainBinding
+import dev.pegasus.whatsapp.message.recovery.presentation.adapters.AdapterMessages
 import dev.pegasus.whatsapp.message.recovery.presentation.viewModels.ViewModelDbMessages
 import dev.pegasus.whatsapp.message.recovery.presentation.viewModels.ViewModelDbProvider
 
@@ -21,6 +22,7 @@ class MainActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val viewModel by viewModels<ViewModelDbMessages> { ViewModelDbProvider(App.Companion.diManual.useCase) }
+    private val adapter by lazy { AdapterMessages() }
 
     private val permissionLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         setUI()
@@ -31,6 +33,8 @@ class MainActivity : AppCompatActivity() {
 
         fullScreen()
         setUI()
+        initRecyclerView()
+        initObservers()
 
         binding.mbGrantPermissionMain.setOnClickListener { askPermission() }
     }
@@ -47,6 +51,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun setUI() {
         binding.llPermissionMain.isVisible = !checkPermission()
+    }
+
+    private fun initRecyclerView() {
+        binding.rcvListMain.adapter = adapter
+    }
+
+    private fun initObservers() {
+        viewModel.listLiveData.observe(this) { adapter.submitList(it) }
     }
 
     private fun checkPermission(): Boolean {
