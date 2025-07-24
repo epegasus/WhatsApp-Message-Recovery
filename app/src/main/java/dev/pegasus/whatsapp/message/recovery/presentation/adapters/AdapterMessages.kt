@@ -21,21 +21,23 @@ import dev.pegasus.whatsapp.message.recovery.databinding.ItemMessageBinding
  * - GitHub: <a href="https://github.com/epegasus">Github</a>
  */
 
-class AdapterMessages : ListAdapter<ItemDbMessage, AdapterMessages.MessageViewHolder>(DiffCallback()) {
+class AdapterMessages : ListAdapter<ItemDbMessage, AdapterMessages.CustomViewHolder>(DiffCallback()) {
 
-    inner class MessageViewHolder(
-        private val binding: ItemMessageBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
+        val binding = ItemMessageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return CustomViewHolder(binding)
+    }
 
+    override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
+        holder.bind(getItem(position))
+    }
+
+    inner class CustomViewHolder(private val binding: ItemMessageBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: ItemDbMessage) = with(binding) {
             mtvSender.text = item.user
             mtvMessage.text = if (item.isDeleted) "🗑️ Message deleted" else item.message
 
-            mtvTime.text = DateUtils.getRelativeTimeSpanString(
-                item.time,
-                System.currentTimeMillis(),
-                DateUtils.MINUTE_IN_MILLIS
-            )
+            mtvTime.text = DateUtils.getRelativeTimeSpanString(item.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS)
 
             // Show Group badge only if it's a group message
             mtvGroup.visibility = if (item.isGroup) View.VISIBLE else View.GONE
@@ -46,15 +48,6 @@ class AdapterMessages : ListAdapter<ItemDbMessage, AdapterMessages.MessageViewHo
                 ifvAppIcon.setImageBitmap(bmp)
             } ?: ifvAppIcon.setImageResource(R.drawable.ic_launcher_foreground)
         }
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
-        val binding = ItemMessageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return MessageViewHolder(binding)
-    }
-
-    override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
-        holder.bind(getItem(position))
     }
 
     class DiffCallback : DiffUtil.ItemCallback<ItemDbMessage>() {

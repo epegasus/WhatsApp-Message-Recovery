@@ -44,7 +44,11 @@ class NotificationService : NotificationListenerService() {
         super.onNotificationPosted(sbn)
         Log.d(TAG, "NotificationService: onNotificationPosted: :$sbn")
 
-        sbn?.notification?.let {
+        if (sbn?.tag == null) {
+            return
+        }
+
+        sbn.notification?.let {
             if (listOf("com.whatsapp", "com.whatsapp.w4b").contains(sbn.packageName)) {
                 recordMessage(sbn)
             }
